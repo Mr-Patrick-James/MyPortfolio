@@ -1,4 +1,48 @@
-﻿// ── SNAKE MODAL ──
+﻿// ── CLASH ROYALE EFFECT ──
+        function crPlaySound() {
+            var audio = document.getElementById('crAudio');
+            if (!audio) return;
+            audio.currentTime = 0;
+            audio.play().catch(function(){});
+        }
+        function crStopSound() {
+            var audio = document.getElementById('crAudio');
+            if (!audio) return;
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        var crSwapTimer = null;
+
+        function crHoverEnter(wrap) {
+            crPlaySound();
+            var img = wrap.querySelector('.cr-main-img');
+            if (!img) return;
+            if (!img.dataset.original) img.dataset.original = img.getAttribute('src');
+            clearTimeout(crSwapTimer);
+            crSwapTimer = setTimeout(function() {
+                img.setAttribute('src', 'https://mr-luam.s3.ap-southeast-2.amazonaws.com/evo_wizard.png');
+                img.style.objectFit = 'cover';
+                img.style.width = '100%';
+                img.style.height = '100%';
+            }, 600);
+        }
+        function crHoverLeave(wrap) {
+            crStopSound();
+            clearTimeout(crSwapTimer);
+            var img = wrap.querySelector('.cr-main-img');
+            if (img && img.dataset.original) {
+                img.setAttribute('src', img.dataset.original);
+            }
+        }
+
+        // Attach CR hover to all avatars after DOM ready
+        document.querySelectorAll('.cr-avatar-wrap').forEach(function(wrap) {
+            wrap.addEventListener('mouseenter', function() { crHoverEnter(wrap); });
+            wrap.addEventListener('mouseleave', function() { crHoverLeave(wrap); });
+        });
+
+        // ── SNAKE MODAL ──
         function openSnakeModal() {
             // On mobile, inline section is already visible — just scroll to it
             if (window.innerWidth <= 768) {
@@ -394,4 +438,10 @@
         });
         scrollTopBtn.addEventListener('click', function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ── CR AVATAR HOVER (attached after DOM is ready) ──
+        document.querySelectorAll('.cr-avatar-wrap').forEach(function(wrap) {
+            wrap.addEventListener('mouseenter', function() { crHoverEnter(wrap); });
+            wrap.addEventListener('mouseleave', function() { crHoverLeave(wrap); });
         });

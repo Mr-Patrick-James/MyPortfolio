@@ -181,12 +181,12 @@
             background:var(--gradient);
         }
         .hero-card-avatar {
-            width:72px; height:72px; border-radius:16px;
-            overflow:hidden; flex-shrink:0;
+            width:120px; height:120px; border-radius:16px;
+            overflow:visible; flex-shrink:0;
             border:2px solid rgba(100,255,218,0.2);
         }
         .hero-card-avatar img {
-            width:100%; height:100%; object-fit:cover; display:block;
+            width:100%; height:100%; object-fit:cover; display:block; border-radius:14px;
         }
         .hero-card h3 { color:var(--text-bright); font-size:1.1rem; font-weight:700; margin-bottom:.2rem; }
         .hero-card p { color:var(--text-dim); font-size:.85rem; }
@@ -347,8 +347,8 @@
             display:flex; flex-direction:column; gap:1.5rem;
         }
         .about-avatar {
-            width:80px; height:80px; border-radius:50%;
-            overflow:hidden; flex-shrink:0;
+            width:120px; height:120px; border-radius:16px;
+            overflow:visible; flex-shrink:0;
             border:2px solid rgba(100,255,218,0.25);
         }
         .about-avatar img {
@@ -730,7 +730,138 @@
         }
         .scroll-top.active { opacity:1; visibility:visible; }
         .scroll-top:hover { transform:translateY(-3px); }
-        /* ── SNAKE INLINE SECTION (mobile only) ── */
+        /* ── CLASH ROYALE AVATAR EFFECT ── */
+        .cr-avatar-wrap {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 16px;
+            width: 120px;
+            height: 120px;
+            display: block;
+            flex-shrink: 0;
+        }
+        .cr-avatar-wrap:hover { transform: scale(1.05); }
+
+        /* Outer glow - hidden until hover completes */
+        .cr-card-glow {
+            position: absolute; inset: -12px;
+            background: linear-gradient(135deg, #ff00ff, #8b5cf6, #a855f7, #ff00ff);
+            border-radius: 28px; filter: blur(8px); opacity: 0; pointer-events:none;
+        }
+        .cr-card-glow-inner {
+            position: absolute; inset: -6px;
+            background: linear-gradient(135deg, #ff00ff, #8b5cf6, #a855f7, #ff00ff);
+            border-radius: 22px; filter: blur(4px); opacity: 0; pointer-events:none;
+        }
+        .cr-avatar-wrap:hover .cr-card-glow { animation: crActivateGlow .2s ease-out .6s forwards; }
+        .cr-avatar-wrap:hover .cr-card-glow-inner { animation: crActivateGlowInner .2s ease-out .6s forwards; }
+        @keyframes crActivateGlow { to { opacity: 0.9; } }
+        @keyframes crActivateGlowInner { to { opacity: 1; } }
+
+        /* Main card area */
+        .cr-card-main {
+            position: relative; width: 100%; height: 100%;
+            background: transparent; border-radius: 16px;
+            border: none; overflow: hidden; box-shadow: none;
+            display: block;
+        }
+        .cr-card-main img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            border-radius: 14px;
+            position: relative; z-index: 1;
+        }
+        .cr-avatar-wrap:hover .cr-card-main {
+            animation: crTransformBg .2s ease-out .05s forwards, crActivateMain .2s ease-out .6s forwards;
+        }
+        @keyframes crTransformBg {
+            from { background: transparent; border: none; box-shadow: none; }
+            to { background: linear-gradient(135deg,#4c1d95,#6b21a8,#7c3aed,#5b21b6); border: 1px solid rgba(100,100,100,.2); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        }
+        @keyframes crActivateMain {
+            from { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+            to { border: 2px solid #a855f7; box-shadow: 0 0 30px rgba(255,0,255,.6), inset 0 0 25px rgba(139,92,246,.4); }
+        }
+
+        /* Border draw animation */
+        .cr-border-anim { position: absolute; inset: -6px; border-radius: 22px; overflow: hidden; pointer-events: none; }
+        .cr-border-line {
+            position: relative; opacity: 0;
+            background: linear-gradient(135deg, rgba(255,0,255,.8) 0%, #fff 30%, #fff 70%, rgba(139,92,246,.8) 100%);
+            overflow: hidden;
+        }
+        .cr-border-light {
+            position: absolute;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.3) 20%, #fff 50%, rgba(255,255,255,.3) 80%, transparent 100%);
+            opacity: 0; border-radius: inherit;
+        }
+        .cr-bl-vertical { background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.3) 20%, #fff 50%, rgba(255,255,255,.3) 80%, transparent 100%) !important; }
+        .cr-bl-top { position:absolute; top:0; left:0; width:100%; height:12px; transform:scaleX(0); transform-origin:center; border-radius:6px; }
+        .cr-bl-top .cr-border-light { top:0; left:-100%; width:100%; height:100%; }
+        .cr-bl-left { position:absolute; left:0; top:0; width:12px; height:100%; transform:scaleY(0); transform-origin:top; border-radius:6px; }
+        .cr-bl-left .cr-border-light { top:-100%; left:0; width:100%; height:100%; }
+        .cr-bl-right { position:absolute; right:0; top:0; width:12px; height:100%; transform:scaleY(0); transform-origin:top; border-radius:6px; }
+        .cr-bl-right .cr-border-light { top:-100%; right:0; width:100%; height:100%; }
+        .cr-bl-btm-l { position:absolute; bottom:0; left:0; width:50%; height:12px; transform:scaleX(0); transform-origin:left; border-radius:6px; }
+        .cr-bl-btm-l .cr-border-light { bottom:0; left:-100%; width:100%; height:100%; }
+        .cr-bl-btm-r { position:absolute; bottom:0; right:0; width:50%; height:12px; transform:scaleX(0); transform-origin:right; border-radius:6px; }
+        .cr-bl-btm-r .cr-border-light { bottom:0; right:-100%; width:100%; height:100%; }
+
+        .cr-avatar-wrap:hover .cr-border-line { opacity: 1; }
+        .cr-avatar-wrap:hover .cr-bl-top    { animation: crDrawTop .2s ease-out .15s forwards, crAddGlow .15s ease-out .7s forwards; }
+        .cr-avatar-wrap:hover .cr-bl-left   { animation: crDrawLeft .25s ease-out .3s forwards, crAddGlow .15s ease-out .7s forwards; }
+        .cr-avatar-wrap:hover .cr-bl-right  { animation: crDrawRight .25s ease-out .3s forwards, crAddGlow .15s ease-out .7s forwards; }
+        .cr-avatar-wrap:hover .cr-bl-btm-l  { animation: crDrawBtmL .15s ease-out .5s forwards, crAddGlow .15s ease-out .7s forwards; }
+        .cr-avatar-wrap:hover .cr-bl-btm-r  { animation: crDrawBtmR .15s ease-out .5s forwards, crAddGlow .15s ease-out .7s forwards; }
+        .cr-avatar-wrap:hover .cr-bl-top .cr-border-light    { animation: crFlowH 1s linear .8s infinite; }
+        .cr-avatar-wrap:hover .cr-bl-left .cr-border-light   { animation: crFlowV 1s linear .85s infinite; }
+        .cr-avatar-wrap:hover .cr-bl-right .cr-border-light  { animation: crFlowV 1s linear .9s infinite; }
+        .cr-avatar-wrap:hover .cr-bl-btm-l .cr-border-light  { animation: crFlowH 1s linear .95s infinite; }
+        .cr-avatar-wrap:hover .cr-bl-btm-r .cr-border-light  { animation: crFlowHR 1s linear 1s infinite; }
+
+        @keyframes crDrawTop   { to { transform: scaleX(1); } }
+        @keyframes crDrawLeft  { to { transform: scaleY(1); } }
+        @keyframes crDrawRight { to { transform: scaleY(1); } }
+        @keyframes crDrawBtmL  { to { transform: scaleX(1); } }
+        @keyframes crDrawBtmR  { to { transform: scaleX(1); } }
+        @keyframes crAddGlow   { to { box-shadow: 0 0 25px rgba(255,0,255,.9), 0 0 40px rgba(255,255,255,.6), inset 0 0 10px rgba(255,255,255,.8); } }
+        @keyframes crFlowH  { 0%{opacity:0;transform:translateX(-100%)} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0;transform:translateX(200%)} }
+        @keyframes crFlowHR { 0%{opacity:0;transform:translateX(100%)} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0;transform:translateX(-200%)} }
+        @keyframes crFlowV  { 0%{opacity:0;transform:translateY(-100%)} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0;transform:translateY(200%)} }
+
+        /* Gem / diamond */
+        .cr-gem-container { position:absolute; top:-12px; left:50%; transform:translateX(-50%); z-index:10; opacity:0; visibility:hidden; pointer-events:none; }
+        .cr-gem { width:28px; height:28px; background:linear-gradient(135deg,#7c3aed,#5b21b6); border:1px solid rgba(150,150,150,.3); border-radius:5px; transform:rotate(45deg); position:relative; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+        .cr-gem::before { content:''; position:absolute; inset:3px; background:linear-gradient(135deg,#8b5cf6,#6b21a8); border-radius:2px; }
+        .cr-avatar-wrap:hover .cr-gem-container { animation: crGemAppear .1s ease-out forwards, crGemActivate .15s ease-out .05s forwards; }
+        .cr-avatar-wrap:hover .cr-gem { animation: crGemGlow .15s ease-out .05s forwards; }
+        @keyframes crGemAppear   { from{opacity:0;visibility:hidden;transform:translateX(-50%) scale(0)} to{opacity:1;visibility:visible;transform:translateX(-50%) scale(1)} }
+        @keyframes crGemActivate { to { transform: translateX(-50%) scale(1.15); } }
+        @keyframes crGemGlow     { to { border:3px solid #f59e0b; box-shadow:0 0 20px rgba(245,158,11,.8), inset 0 0 12px rgba(123,58,237,.9); } }
+
+        /* Sparkles */
+        .cr-sparkle { position:absolute; width:6px; height:6px; background:radial-gradient(circle,#fff 0%,#ff00ff 100%); border-radius:50%; opacity:0; pointer-events:none; box-shadow:0 0 10px rgba(255,255,255,.8); }
+        .cr-sp1{top:15%;left:8%} .cr-sp2{top:25%;right:12%} .cr-sp3{bottom:20%;left:15%} .cr-sp4{bottom:30%;right:8%}
+        .cr-avatar-wrap:hover .cr-sparkle { animation: crSparkle 2s ease-in-out infinite; }
+        .cr-avatar-wrap:hover .cr-sp1{animation-delay:.8s} .cr-avatar-wrap:hover .cr-sp2{animation-delay:.85s}
+        .cr-avatar-wrap:hover .cr-sp3{animation-delay:.9s}  .cr-avatar-wrap:hover .cr-sp4{animation-delay:.95s}
+        @keyframes crSparkle { 0%,100%{opacity:0;transform:scale(0)} 50%{opacity:1;transform:scale(1.2)} }
+
+        /* Image enhance + overlay + inner border */
+        .cr-avatar-wrap img { transition: filter .5s ease-out; border-radius: inherit; width:100%; height:100%; object-fit:cover; display:block; }
+        .cr-avatar-wrap:hover img { animation: crEnhanceImg .15s ease-out .6s forwards; }
+        @keyframes crEnhanceImg { to { filter: brightness(1.1) contrast(1.05); } }
+        .cr-card-overlay { position:absolute; inset:0; background:transparent; border-radius:14px; pointer-events:none; }
+        .cr-avatar-wrap:hover .cr-card-overlay { animation: crActivateOverlay .2s ease-out .7s forwards; }
+        @keyframes crActivateOverlay { to { background: linear-gradient(135deg,rgba(139,92,246,.1) 0%,rgba(168,85,247,.15) 50%,rgba(107,33,168,.1) 100%); } }
+        .cr-inner-border { position:absolute; inset:8px; border:1px solid transparent; border-radius:12px; pointer-events:none; }
+        .cr-avatar-wrap:hover .cr-inner-border { animation: crActivateInnerBorder .2s ease-out .7s forwards; }
+        @keyframes crActivateInnerBorder { to { border:2px solid rgba(168,85,247,.6); box-shadow:inset 0 0 15px rgba(255,255,255,.2); } }
+
+        /* Remove old simple CR styles */
+        .cr-crown { display: none; }
+        .cr-card-frame { display: none; }
         #snake-inline { display:none; padding:5rem 5%; background:var(--bg); }
         @media(max-width:768px) {
             #snake-inline { display:block; }
