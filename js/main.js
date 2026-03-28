@@ -239,16 +239,27 @@
         // ── NAV / PAGE JS ──
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
+
+        // backdrop overlay for mobile nav
+        const navBackdrop = document.createElement('div');
+        navBackdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;';
+        document.body.appendChild(navBackdrop);
+
+        function closeNav() {
+            navLinks.classList.remove('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            navBackdrop.style.display = 'none';
+        }
+
         mobileMenuBtn.addEventListener('click', function() {
             navLinks.classList.toggle('active');
             mobileMenuBtn.innerHTML = navLinks.classList.contains('active')
                 ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            navBackdrop.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
         });
-        navLinks.querySelectorAll('a').forEach(function(a) {
-            a.addEventListener('click', function() {
-                navLinks.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            });
+        navBackdrop.addEventListener('click', closeNav);
+        navLinks.querySelectorAll('a, button').forEach(function(el) {
+            el.addEventListener('click', closeNav);
         });
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', function() {
