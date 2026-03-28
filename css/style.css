@@ -730,7 +730,16 @@
         }
         .scroll-top.active { opacity:1; visibility:visible; }
         .scroll-top:hover { transform:translateY(-3px); }
-        /* ── RESPONSIVE ── */
+        /* ── SNAKE INLINE SECTION (mobile only) ── */
+        #snake-inline { display:none; padding:5rem 5%; background:var(--bg); }
+        @media(max-width:768px) {
+            #snake-inline { display:block; }
+            #snakeModal { display:none !important; }
+            #snakeCanvas { max-height:70vw; max-width:70vw; margin:0 auto; display:block; }
+        }
+        @media(min-width:769px) {
+            #snake-inline { display:none !important; }
+        }        /* ── RESPONSIVE ── */
         @media(max-width:900px) {
             .about-grid { grid-template-columns:1fr; }
             .about-card { order:-1; }

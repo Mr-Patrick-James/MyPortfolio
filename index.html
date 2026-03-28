@@ -457,7 +457,7 @@
 
     <!-- SNAKE MODAL -->
     <div id="snakeModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem;">
-        <div style="background:#0f1829;border:1px solid rgba(99,179,237,0.12);border-radius:20px;width:100%;max-width:480px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6);position:relative;">
+        <div style="background:#0f1829;border:1px solid rgba(99,179,237,0.12);border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,0.6);position:relative;">
             <!-- Modal Header -->
             <div style="padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(99,179,237,0.08);">
                 <div style="display:flex;align-items:center;gap:.6rem;">
@@ -526,6 +526,57 @@
             </div>
         </div>
     </div>
+
+    <!-- SNAKE INLINE (mobile only) -->
+    <section id="snake-inline">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><span>🐍 Snake Game</span></div>
+                <h2 class="section-title">Play Snake</h2>
+            </div>
+            <div style="max-width:420px;margin:0 auto;background:var(--surface2);border-radius:20px;border:1px solid var(--border);overflow:hidden;">
+                <div style="padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+                    <div style="display:flex;align-items:center;gap:.6rem;">
+                        <span style="color:var(--accent);font-size:1.1rem;">🐍</span>
+                        <span style="color:var(--text-bright);font-weight:700;">Snake Game</span>
+                    </div>
+                    <button onclick="snakeToggleSound()" id="snakeSoundBtn2" style="background:rgba(100,255,218,0.08);border:1px solid rgba(100,255,218,0.2);color:var(--accent);border-radius:7px;padding:.3rem .65rem;font-size:.75rem;cursor:pointer;"><i class="fas fa-volume-up"></i></button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);">
+                    <div style="padding:.7rem;text-align:center;border-right:1px solid var(--border);"><div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;margin-bottom:.2rem;">Score</div><div style="font-size:1.1rem;font-weight:800;color:var(--accent);" id="snakeScore2">0</div></div>
+                    <div style="padding:.7rem;text-align:center;border-right:1px solid var(--border);"><div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;margin-bottom:.2rem;">Level</div><div style="font-size:1.1rem;font-weight:800;color:var(--text-bright);" id="snakeLevel2">1</div></div>
+                    <div style="padding:.7rem;text-align:center;border-right:1px solid var(--border);"><div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;margin-bottom:.2rem;">Best</div><div style="font-size:1.1rem;font-weight:800;color:var(--gold);" id="snakeBest2">0</div></div>
+                    <div style="padding:.7rem;text-align:center;"><div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;margin-bottom:.2rem;">Status</div><div style="font-size:.85rem;font-weight:700;color:#4ade80;" id="snakeStatus2">Ready</div></div>
+                </div>
+                <div style="position:relative;background:#080e1a;">
+                    <canvas id="snakeCanvas2" width="400" height="400" style="display:block;width:100%;aspect-ratio:1/1;image-rendering:pixelated;"></canvas>
+                    <div id="snakeOverlay2" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(8,14,26,0.88);backdrop-filter:blur(4px);text-align:center;padding:1.5rem;">
+                        <div style="font-size:2.5rem;">🎮</div>
+                        <h3 style="color:var(--text-bright);font-size:1.1rem;font-weight:700;">Ready to Play?</h3>
+                        <p style="color:var(--text-dim);font-size:.85rem;">Tap Start to play</p>
+                    </div>
+                </div>
+                <div style="padding:.9rem 1.2rem;display:flex;justify-content:center;gap:.6rem;border-top:1px solid var(--border);">
+                    <button id="snakeStartBtn2" onclick="snakeStart2()" style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.3rem;background:var(--gradient);color:#080e1a;border:none;border-radius:9px;font-size:.85rem;font-weight:700;cursor:pointer;"><i class="fas fa-play"></i> Start</button>
+                    <button id="snakePauseBtn2" onclick="snakeTogglePause2()" style="display:none;align-items:center;gap:.4rem;padding:.55rem 1.1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-dim);border-radius:9px;font-size:.85rem;cursor:pointer;"><i class="fas fa-pause"></i> Pause</button>
+                    <button id="snakeResetBtn2" onclick="snakeReset2()" style="display:none;align-items:center;gap:.4rem;padding:.55rem 1.1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-dim);border-radius:9px;font-size:.85rem;cursor:pointer;"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+                <div style="padding:.5rem 1.2rem .9rem;border-top:1px solid var(--border);">
+                    <div style="display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:5px;margin:0 auto;width:fit-content;">
+                        <div></div>
+                        <button ontouchstart="snakeDir2(0,-1)" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;color:var(--text-dim);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-up"></i></button>
+                        <div></div>
+                        <button ontouchstart="snakeDir2(-1,0)" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;color:var(--text-dim);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-left"></i></button>
+                        <div></div>
+                        <button ontouchstart="snakeDir2(1,0)" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;color:var(--text-dim);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-right"></i></button>
+                        <div></div>
+                        <button ontouchstart="snakeDir2(0,1)" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;color:var(--text-dim);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-down"></i></button>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- CONTACT -->
     <section id="contact">

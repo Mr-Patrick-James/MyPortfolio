@@ -1,5 +1,11 @@
 ﻿// ── SNAKE MODAL ──
         function openSnakeModal() {
+            // On mobile, inline section is already visible — just scroll to it
+            if (window.innerWidth <= 768) {
+                var inlineSection = document.getElementById('snake-inline');
+                inlineSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
             const modal = document.getElementById('snakeModal');
             modal.style.display = 'flex';
             modal.classList.remove('closing');
@@ -235,6 +241,112 @@
         food={x:15,y:15}; score=0; level=1; speed=INITIAL_SPEED;
         gameStarted=false; gameOver=false; isPaused=false;
         highScore=parseInt(localStorage.getItem('snakeHS')||'0');
+
+        // ── INLINE SNAKE ENGINE (mobile) ──
+        let snake2, dir2, nextDir2, food2, score2, level2, speed2;
+        let gameStarted2, gameOver2, isPaused2, loopTimer2;
+        const canvas2 = document.getElementById('snakeCanvas2');
+        const ctx2 = canvas2 ? canvas2.getContext('2d') : null;
+
+        function snake2UpdateUI() {
+            if (!canvas2) return;
+            document.getElementById('snakeScore2').textContent = score2;
+            document.getElementById('snakeLevel2').textContent = level2;
+            document.getElementById('snakeBest2').textContent = highScore;
+            var el = document.getElementById('snakeStatus2');
+            if (!gameStarted2)     { el.textContent = 'Ready';     el.style.color = '#4ade80'; }
+            else if (gameOver2)    { el.textContent = 'Game Over'; el.style.color = '#f87171'; }
+            else if (isPaused2)    { el.textContent = 'Paused';    el.style.color = '#fbbf24'; }
+            else                   { el.textContent = 'Lvl '+level2; el.style.color = '#64ffda'; }
+        }
+        function snake2Draw() {
+            if (!ctx2) return;
+            var W = canvas2.width, H = canvas2.height;
+            ctx2.fillStyle = '#080e1a'; ctx2.fillRect(0,0,W,H);
+            ctx2.strokeStyle = 'rgba(99,179,237,0.04)'; ctx2.lineWidth = 1;
+            for (var i = 0; i <= COLS; i++) {
+                ctx2.beginPath(); ctx2.moveTo(i*CELL,0); ctx2.lineTo(i*CELL,H); ctx2.stroke();
+                ctx2.beginPath(); ctx2.moveTo(0,i*CELL); ctx2.lineTo(W,i*CELL); ctx2.stroke();
+            }
+            var fx = food2.x*CELL, fy = food2.y*CELL;
+            ctx2.shadowColor = '#f87171'; ctx2.shadowBlur = 10;
+            ctx2.fillStyle = '#f87171'; ctx2.fillRect(fx+3,fy+3,CELL-6,CELL-6);
+            ctx2.shadowBlur = 0;
+            snake2.forEach(function(seg,i) {
+                var x=seg.x*CELL, y=seg.y*CELL;
+                var alpha = Math.max(0.35, 1-i*0.04);
+                if (i===0) { ctx2.shadowColor='#64ffda'; ctx2.shadowBlur=8; ctx2.fillStyle='#64ffda'; ctx2.fillRect(x+1,y+1,CELL-2,CELL-2); ctx2.shadowBlur=0; }
+                else { var hex=Math.floor(alpha*255).toString(16).padStart(2,'0'); ctx2.fillStyle='#64ffda'+hex; ctx2.fillRect(x+2,y+2,CELL-4,CELL-4); }
+            });
+        }
+        function snake2Tick() {
+            if (!gameStarted2||gameOver2||isPaused2) return;
+            dir2={x:nextDir2.x,y:nextDir2.y};
+            var head={x:snake2[0].x+dir2.x,y:snake2[0].y+dir2.y};
+            if (head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake2.some(function(s){return s.x===head.x&&s.y===head.y;})) {
+                gameOver2=true; clearInterval(loopTimer2);
+                if (score2>highScore) { highScore=score2; localStorage.setItem('snakeHS',highScore); }
+                sfx.die(); snake2UpdateUI();
+                document.getElementById('snakeOverlay2').style.display='flex';
+                document.getElementById('snakePauseBtn2').style.display='none';
+                document.getElementById('snakeResetBtn2').style.display='inline-flex';
+                document.getElementById('snakeStartBtn2').style.display='inline-flex';
+                document.getElementById('snakeStartBtn2').innerHTML='<i class="fas fa-play"></i> Play Again';
+                return;
+            }
+            snake2.unshift(head);
+            if (head.x===food2.x&&head.y===food2.y) {
+                score2+=10; level2=Math.floor(score2/100)+1;
+                speed2=Math.max(60,INITIAL_SPEED-(level2-1)*SPEED_INC);
+                food2=spawnFood2(); sfx.eat();
+                clearInterval(loopTimer2); loopTimer2=setInterval(snake2Tick,speed2);
+            } else { snake2.pop(); }
+            snake2UpdateUI(); snake2Draw();
+        }
+        function spawnFood2() {
+            var f; do { f={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}; } while(snake2.some(function(s){return s.x===f.x&&s.y===f.y;})); return f;
+        }
+        function snake2Reset() {
+            clearInterval(loopTimer2);
+            snake2=[{x:10,y:10}]; dir2={x:1,y:0}; nextDir2={x:1,y:0};
+            food2={x:15,y:15}; score2=0; level2=1; speed2=INITIAL_SPEED;
+            gameStarted2=false; gameOver2=false; isPaused2=false;
+            highScore=parseInt(localStorage.getItem('snakeHS')||'0');
+            snake2UpdateUI(); snake2Draw();
+            document.getElementById('snakeOverlay2').style.display='flex';
+            document.getElementById('snakeStartBtn2').style.display='inline-flex';
+            document.getElementById('snakeStartBtn2').innerHTML='<i class="fas fa-play"></i> Start';
+            document.getElementById('snakePauseBtn2').style.display='none';
+            document.getElementById('snakeResetBtn2').style.display='none';
+        }
+        function snakeStart2() {
+            snake2=[{x:10,y:10}]; dir2={x:1,y:0}; nextDir2={x:1,y:0};
+            food2=spawnFood2(); score2=0; level2=1; speed2=INITIAL_SPEED;
+            gameStarted2=true; gameOver2=false; isPaused2=false;
+            document.getElementById('snakeOverlay2').style.display='none';
+            sfx.start(); clearInterval(loopTimer2); loopTimer2=setInterval(snake2Tick,speed2);
+            document.getElementById('snakeStartBtn2').style.display='none';
+            document.getElementById('snakePauseBtn2').style.display='inline-flex';
+            document.getElementById('snakeResetBtn2').style.display='inline-flex';
+            snake2UpdateUI(); snake2Draw();
+        }
+        function snakeTogglePause2() {
+            if (!gameStarted2||gameOver2) return;
+            isPaused2=!isPaused2; sfx.pause();
+            if (isPaused2) { clearInterval(loopTimer2); document.getElementById('snakeOverlay2').style.display='flex'; }
+            else { document.getElementById('snakeOverlay2').style.display='none'; loopTimer2=setInterval(snake2Tick,speed2); }
+            snake2UpdateUI();
+        }
+        function snakeReset2() { snake2Reset(); }
+        function snakeDir2(dx,dy) {
+            if (!gameStarted2||gameOver2||isPaused2) return;
+            if (dx===-dir2.x&&dy===dir2.y) return;
+            if (dy===-dir2.y&&dx===dir2.x) return;
+            nextDir2={x:dx,y:dy};
+        }
+
+        // Init inline snake
+        snake2Reset();
 
         // ── NAV / PAGE JS ──
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
