@@ -735,10 +735,13 @@
         @media(max-width:768px) {
             #snake-inline { display:block; }
             #snakeModal { display:none !important; }
-            #snakeCanvas { max-height:70vw; max-width:70vw; margin:0 auto; display:block; }
+            #snakeCanvas2 { max-height:55vw !important; max-width:55vw !important; margin:0 auto; display:block; }
+            #snake-inline .container > div { max-width:280px; }
         }
         @media(min-width:769px) {
             #snake-inline { display:none !important; }
+            #snakeCanvas { max-height:380px; max-width:380px; margin:0 auto; display:block; }
+            #snakeDpad { display:none !important; }
         }        /* ── RESPONSIVE ── */
         @media(max-width:900px) {
             .about-grid { grid-template-columns:1fr; }
